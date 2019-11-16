@@ -1,0 +1,51 @@
+{
+	"AWSTemplateFormatVersion": "2010-09-09",
+	"Resources": {
+		"S3": {
+			"Type": "AWS::S3::Bucket",
+			"Properties": {
+				"BucketName": "daleaguehub",
+				"WebsiteConfiguration": {
+					"IndexDocument": "index.html"
+				}
+			}
+		},
+		"BucketPolicy": {
+			"Type": "AWS::S3::BucketPolicy",
+			"Properties": {
+				"Bucket": {
+					"Ref": "S3"
+				},
+				"PolicyDocument": {
+					"Statement": [
+						{
+							"Action": [
+								"s3:GetObject"
+							],
+							"Effect": "Allow",
+							"Resource": {
+								"Fn::Join": [
+									"",
+									[
+										"arn:aws:s3:::",
+										{ "Ref": "S3" },
+										"/*"
+									]
+								]
+							},
+							"Principal": "*"
+						}
+					]
+				}
+			}
+		}
+	},
+	"Outputs": {
+		"WebsiteURL": {
+			"Value": {
+				"Fn::GetAtt": ["S3", "WebsiteURL"]
+			},
+			"Description": "Website URL"
+		}
+	}
+}
